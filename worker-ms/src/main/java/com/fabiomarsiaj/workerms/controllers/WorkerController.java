@@ -4,7 +4,9 @@ import com.fabiomarsiaj.workerms.domains.Worker;
 import com.fabiomarsiaj.workerms.services.WorkerService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/workers")
 @RequiredArgsConstructor
 public class WorkerController {
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     private final WorkerService workerService;
@@ -34,6 +40,8 @@ public class WorkerController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Worker> findById(@PathVariable Long id) {
+        log.info("PORT = " + env.getProperty("local.server.port"));
+
         Optional<Worker> obj = workerService.find(id);
 
         return ResponseEntity.ok().body(obj.get());
